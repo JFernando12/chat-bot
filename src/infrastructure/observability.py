@@ -1,14 +1,9 @@
-"""
-LangSmith integration for observability and monitoring.
-Provides tracing, logging, and evaluation capabilities for the agent.
-"""
-
 import logging
 import os
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 
-from config.settings import settings
+from config.settings import env
 
 
 logger = logging.getLogger(__name__)
@@ -27,9 +22,9 @@ class LangSmithService:
         tracing_enabled: bool = True
     ):
         """Initialize LangSmith service."""
-        self.api_key = api_key or settings.langsmith_api_key
-        self.project_name = project_name or settings.langsmith_project_name
-        self.tracing_enabled = tracing_enabled and settings.langsmith_tracing_enabled
+        self.api_key = api_key or env.langsmith_api_key
+        self.project_name = project_name or env.langsmith_project_name
+        self.tracing_enabled = tracing_enabled and env.langsmith_tracing_enabled
         
         if self.api_key and self.tracing_enabled:
             self._setup_langsmith()

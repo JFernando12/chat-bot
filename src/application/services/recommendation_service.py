@@ -3,7 +3,6 @@ from typing import Any
 from ...domain.models import Car, CustomerPreferences
 from ...infrastructure.repositories import CarRepositoryInterface
 
-
 class RecommendationService():
     """
     Concrete implementation of recommendation service.

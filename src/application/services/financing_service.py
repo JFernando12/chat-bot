@@ -1,7 +1,6 @@
 from decimal import Decimal
-from typing import List, Optional, Dict, Any
-from dataclasses import dataclass
-from ...domain.models import Car, CustomerPreferences, FinancingPlan
+from typing import List, Optional
+from ...domain.models import FinancingPlan
 
 class FinancingService():
     """

@@ -1,5 +1,5 @@
 """Config package initialization."""
 
-from .settings import settings, get_settings, Settings
+from .settings import env
 
-__all__ = ["settings", "get_settings", "Settings"]
+__all__ = ["env"]

@@ -1,8 +1,3 @@
-"""
-Repository pattern implementation for car data access.
-Following SOLID principles and dependency inversion.
-"""
-
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Any
 import pandas as pd
@@ -12,9 +7,7 @@ import logging
 
 from ..domain.models import Car, CustomerPreferences
 
-
 logger = logging.getLogger(__name__)
-
 
 class CarRepositoryInterface(ABC):
     """Abstract interface for car repository following Dependency Inversion Principle."""

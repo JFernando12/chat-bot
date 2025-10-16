@@ -1,18 +1,11 @@
-"""
-Twilio WhatsApp integration for the Kavak commercial agent.
-Handles sending and receiving messages through Twilio's WhatsApp Business API.
-"""
-
 import logging
 from typing import Optional, Dict, Any
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioException
 
-from config.settings import settings
-
+from config.settings import env
 
 logger = logging.getLogger(__name__)
-
 
 class WhatsAppService:
     """
@@ -27,9 +20,9 @@ class WhatsAppService:
         whatsapp_number: Optional[str] = None
     ):
         """Initialize WhatsApp service with Twilio credentials."""
-        self.account_sid = account_sid or settings.twilio_account_sid
-        self.auth_token = auth_token or settings.twilio_auth_token
-        self.whatsapp_number = whatsapp_number or settings.twilio_whatsapp_number
+        self.account_sid = account_sid or env.twilio_account_sid
+        self.auth_token = auth_token or env.twilio_auth_token
+        self.whatsapp_number = whatsapp_number or env.twilio_whatsapp_number
         
         self.client = Client(self.account_sid, self.auth_token)
 

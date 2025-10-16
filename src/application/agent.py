@@ -1,8 +1,3 @@
-"""
-Kavak Commercial Agent - LangGraph Native Version
-Implements a LangGraph conversation flow with LLM + tools.
-"""
-
 import logging
 from typing import Dict, Any, List, Optional, Annotated, TypedDict
 from decimal import Decimal
@@ -16,22 +11,12 @@ from langgraph.prebuilt import ToolNode
 from pydantic import BaseModel, Field, SecretStr
 
 from ..domain.models import Car, CustomerPreferences, ConversationState
-# from ..application.services import (
-#     RecommendationService,
-#     FinancingService,
-#     CarSearchService,
-# )
 from ..application.services.recommendation_service import RecommendationService
 from ..application.services.financing_service import FinancingService
 from ..application.services.car_search_service import CarSearchService
 from ..infrastructure.repositories import CarRepositoryInterface
 
 logger = logging.getLogger(__name__)
-
-
-# ==============================
-# STATE MANAGEMENT
-# ==============================
 
 class AgentState(TypedDict):
     """Defines the state used by the LangGraph workflow."""
@@ -40,11 +25,6 @@ class AgentState(TypedDict):
     conversation_state: ConversationState
     last_recommendations: Optional[List[Car]]
     last_search_query: Optional[str]
-
-
-# ==============================
-# INPUT SCHEMAS FOR TOOLS
-# ==============================
 
 class CarRecommendationInput(BaseModel):
     min_price: Optional[float] = Field(None, description="Minimum price in MXN")
@@ -65,16 +45,7 @@ class FinancingCalculationInput(BaseModel):
 class CarSearchInput(BaseModel):
     query: str = Field(..., description="Search query for cars")
 
-
-# ==============================
-# MAIN AGENT CLASS
-# ==============================
-
 class KavakCommercialAgent:
-    """
-    Kavak Commercial Agent orchestrated with LangGraph.
-    """
-
     def __init__(
         self,
         car_repository: CarRepositoryInterface,
@@ -99,10 +70,6 @@ class KavakCommercialAgent:
 
         # Create the LangGraph workflow
         self.graph = self._create_graph()
-
-    # ==============================
-    # TOOLS DEFINITION
-    # ==============================
 
     def _create_tools(self) -> List[BaseTool]:
         """Define tools for the agent."""
