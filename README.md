@@ -1,273 +1,240 @@
-# 🤖 Kavak AI Sales Agent
+# Arquitectura del Sistema
 
-Bot inteligente de ventas integrado con WhatsApp usando LangChain, LangGraph y FastAPI.
+## Índice
 
-## 📋 Características
+1. [Diagrama de Alto Nivel sobre Componentes y Arquitectura](#diagrama-de-componentes)
+2. [Diagrama sobre Prompts/Arquitectura de Agentes/Tools](#arquitectura-de-agentes)
+3. [Propuesta de Roadmap](#roadmap-de-producción)
 
-- 🎯 Clasificación inteligente de intenciones del usuario
-- 📦 Agente de catálogo para consulta de productos
-- 💰 Agente financiero para cotizaciones y financiamiento
-- 💬 Agente general para preguntas comunes
-- 📱 Integración con WhatsApp vía Twilio
-- 🚀 API REST con FastAPI
-- 🐳 Dockerizado para fácil despliegue
+## Diagrama de Componentes
 
-## 🏗️ Arquitectura
+![Arquitectura del Sistema](docs/architecture.png)
 
-```
-WhatsApp (Twilio) → FastAPI → Services → Agents (LangGraph) → LLM (OpenAI)
-```
+## Componentes Principales
 
-### Componentes
+### API Layer
+- **FastAPI Server**: Servidor HTTP en puerto 8000
+- **WhatsApp Router**: Recibe webhooks de Twilio en `/api/whatsapp/webhook`
+- **Chat Router**: API REST directa en `/api/chat`
 
-- **Routers**: Endpoints HTTP (chat, whatsapp)
-- **Services**: Lógica de negocio y orquestación
-- **Agents**: Agentes especializados con LangGraph
-- **Domain**: Modelos de datos y estado
+### Service Layer
+- **Chat Service**: Orquestador principal del flujo de conversación
+- **Catalog Service**: Búsqueda semántica de vehículos usando embeddings
+- **Finance Service**: Calculadora de financiamiento y mensualidades
 
-## 🚀 Inicio Rápido con Docker
+### Agent Layer (LangGraph)
+- **Classify Intent Agent**: Router que clasifica la intención del usuario
+- **General Agent**: Responde preguntas generales sobre Kavak
+- **Catalog Agent**: Busca vehículos según criterios del usuario
+- **Finance Agent**: Calcula planes de pago y financiamiento
 
-### Prerrequisitos
+### Data Layer
+- **CSV Catalog**: Base de datos de vehículos disponibles
+- **Agent State**: Memoria de conversación en memoria
 
-- Docker y Docker Compose instalados
-- Cuenta de OpenAI con API key
-- Cuenta de Twilio (para WhatsApp)
 
-### Instalación
-
-1. **Clonar el repositorio**
-```bash
-git clone https://github.com/JFernando12/chat-bot.git
-cd chat-bot
-```
-
-2. **Configurar variables de entorno**
-```bash
-cp .env.example .env
-```
-
-Editar `.env` y agregar tus credenciales:
-```env
-OPENAI_API_KEY=sk-your-key-here
-TWILIO_ACCOUNT_SID=your-sid
-TWILIO_AUTH_TOKEN=your-token
-TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
-```
-
-3. **Construir y ejecutar con Docker Compose**
-```bash
-docker-compose up --build
-```
-
-4. **La aplicación estará disponible en:**
-- API: http://localhost:8000
-- Docs: http://localhost:8000/docs
-- Health: http://localhost:8000/api/health
-
-## 🛠️ Desarrollo Local (sin Docker)
-
-### Prerrequisitos
-
-- Python 3.11+
-- pip
-
-### Instalación
-
-1. **Crear entorno virtual**
-```bash
-python -m venv venv
-```
-
-2. **Activar entorno virtual**
-
-Windows (PowerShell):
-```powershell
-.\venv\Scripts\Activate.ps1
-```
-
-Linux/Mac:
-```bash
-source venv/bin/activate
-```
-
-3. **Instalar dependencias**
-```bash
-pip install -r requirements.txt
-```
-
-4. **Configurar variables de entorno**
-```bash
-cp .env.example .env
-# Editar .env con tus credenciales
-```
-
-5. **Ejecutar la aplicación**
-```bash
-python -m src.main
-```
-
-## 📱 Configuración de WhatsApp con Twilio
-
-### Paso 1: Crear cuenta en Twilio
-
-1. Ir a [Twilio.com](https://www.twilio.com/)
-2. Crear cuenta gratuita
-3. Verificar email y teléfono
-
-### Paso 2: Activar WhatsApp Sandbox
-
-1. En el dashboard de Twilio, ir a **Messaging** → **Try it out** → **Send a WhatsApp message**
-2. Seguir las instrucciones para unirse al sandbox
-3. Enviar el código desde tu WhatsApp al número de Twilio
-
-### Paso 3: Configurar Webhook
-
-Para desarrollo local, necesitas exponer tu servidor:
-
-1. **Instalar ngrok**
-```bash
-# Windows (con Chocolatey)
-choco install ngrok
-
-# O descargar desde https://ngrok.com/download
-```
-
-2. **Exponer tu servidor local**
-```bash
-ngrok http 8000
-```
-
-3. **Copiar la URL HTTPS generada** (ej: https://abc123.ngrok.io)
-
-4. **Configurar en Twilio**:
-   - Ir a **Messaging** → **Settings** → **WhatsApp Sandbox Settings**
-   - En "When a message comes in", pegar: `https://tu-url-ngrok.ngrok.io/api/whatsapp/webhook`
-   - Guardar
-
-### Paso 4: Probar
-
-Envía un mensaje de WhatsApp al número del sandbox y el bot responderá.
-
-## 🔧 Comandos Docker Útiles
-
-```bash
-# Construir la imagen
-docker-compose build
-
-# Ejecutar en modo detached
-docker-compose up -d
-
-# Ver logs
-docker-compose logs -f
-
-# Detener
-docker-compose down
-
-# Reconstruir y ejecutar
-docker-compose up --build
-
-# Ejecutar comandos dentro del contenedor
-docker-compose exec chatbot bash
-```
-
-## 📊 API Endpoints
-
-### Chat
-```bash
-POST /api/chat
-Body: {"user_id": "123", "message": "Hola"}
-```
-
-### WhatsApp Webhook
-```bash
-POST /api/whatsapp/webhook
-# Recibe mensajes de Twilio
-```
-
-### Health Check
-```bash
-GET /api/health
-```
-
-## 🧪 Testing
-
-```bash
-# Ejecutar tests
-pytest
-
-# Con cobertura
-pytest --cov=src tests/
-```
-
-## 📁 Estructura del Proyecto
+## Flujo de un Mensaje
 
 ```
-chat-bot/
-├── src/
-│   ├── api/
-│   │   ├── routers/         # Endpoints HTTP
-│   │   └── fastapi_app.py   # Aplicación FastAPI
-│   ├── application/
-│   │   ├── agents/          # Agentes LangGraph
-│   │   └── services/        # Lógica de negocio
-│   ├── config/              # Configuración
-│   ├── domain/              # Modelos de dominio
-│   └── main.py              # Entry point
-├── data/
-│   └── sample_caso_ai_engineer.csv
-├── tests/                   # Tests unitarios
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-└── .env.example
+Usuario → Twilio → WhatsApp Router → Chat Service → Clasificador → Agente → Respuesta
 ```
 
-## 🔐 Seguridad
+1. Usuario envía mensaje por WhatsApp
+2. Twilio recibe el mensaje y hace POST a `/api/whatsapp/webhook`
+3. WhatsApp Router procesa el mensaje
+4. Chat Service recibe la query y la envía al Classify Intent Agent
+5. El agente clasificador determina la intención (GENERAL, CATALOG_SEARCH, FINANCE_CALCULATION)
+6. Se enruta al agente especializado correspondiente
+7. El agente procesa y genera respuesta usando OpenAI
+8. La respuesta se envía de vuelta por Twilio al usuario
 
-- ✅ Usuario no-root en Docker
-- ✅ Variables de entorno para secretos
-- ⚠️ Implementar validación de firma de Twilio en producción
-- ⚠️ Agregar rate limiting
 
-## 📈 Monitoreo
+## Arquitectura de Agentes
 
-El contenedor incluye health checks para monitoreo:
+### 1. Classify Intent Agent (Router)
 
-```bash
-# Verificar health manualmente
-curl http://localhost:8000/api/health
+Clasifica la intención del usuario en 3 categorías:
+- GENERAL: Preguntas sobre Kavak
+- CATALOG_SEARCH: Búsqueda de autos
+- FINANCE_CALCULATION: Cálculos de financiamiento
+
+**Prompt**:
+```
+Clasifica la consulta en: GENERAL, CATALOG_SEARCH o FINANCE_CALCULATION
+
+Ejemplos:
+- "¿Qué garantía ofrecen?" → GENERAL
+- "Quiero un Honda Civic" → CATALOG_SEARCH
+- "¿Cuánto pagaría mensualmente?" → FINANCE_CALCULATION
 ```
 
-## 🚀 Despliegue a Producción
+**Configuración**: GPT-4o-mini, temperature=0
 
-Ver documento `docs/roadmap.md` para plan detallado de producción.
 
-### Checklist rápido:
-- [ ] Configurar variables de entorno en servidor
-- [ ] Usar base de datos persistente
-- [ ] Implementar logging centralizado
-- [ ] Configurar CI/CD
-- [ ] Agregar monitoring (Prometheus/Grafana)
-- [ ] Implementar rate limiting
-- [ ] SSL/HTTPS obligatorio
-- [ ] Backups automáticos
+### 2. General Agent
 
-## 🤝 Contribuir
+Responde preguntas sobre Kavak: garantía, proceso de compra, servicios.
 
-1. Fork el proyecto
-2. Crear feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push al branch (`git push origin feature/AmazingFeature`)
-5. Abrir Pull Request
+**Prompt**:
+```
+Eres agente de Kavak. Información clave:
+- Garantía: 3 meses o 3,000 km
+- Periodo de prueba: 7 días
+- Certificación: +200 puntos de inspección
+- Proceso 100% digital
+- Entrega a domicilio gratis
+- Financiamiento: 10% anual, 3-6 años
+```
 
-## 📝 Licencia
+**Configuración**: GPT-4o-mini, temperature=0.2
 
-Este proyecto está bajo la licencia MIT.
+**Ejemplo**:
+```
+Input: "¿Cuál es el periodo de prueba?"
+Output: "Tienes 7 días para probar el auto. Si no te convence, lo devuelves sin problema."
+```
 
-## 👥 Autor
 
-JFernando12
+### 3. Catalog Agent
 
-## 📞 Soporte
+Busca autos en el catálogo usando búsqueda semántica.
 
-Para preguntas o soporte, crear un issue en GitHub.
+**Prompt**:
+```
+Eres vendedor de Kavak. Recomienda autos del catálogo.
+Destaca precio, kilometraje y características.
+Todos incluyen garantía y 7 días de prueba.
+```
+
+**Tool: Búsqueda Semántica**
+1. Genera embedding de la query (OpenAI text-embedding-3-small)
+2. Compara con embeddings del catálogo (cosine similarity)
+3. Retorna top 3 autos más relevantes
+
+**Configuración**: GPT-4o-mini, temperature=0.2
+
+**Ejemplo**:
+```
+Input: "Auto familiar con tecnología"
+Búsqueda: Honda CR-V 2021, Mazda CX-5 2020, Toyota RAV4 2019
+Output: "Te recomiendo estas 3 opciones:
+- Honda CR-V 2021: $450,000, 35,000 km, Bluetooth y CarPlay
+- Mazda CX-5 2020: $420,000, 42,000 km, Bluetooth y CarPlay
+- Toyota RAV4 2019: $410,000, 48,000 km, Bluetooth"
+```
+
+
+### 4. Finance Agent
+
+Calcula planes de financiamiento extrayendo parámetros del mensaje.
+
+**Proceso**:
+1. LLM extrae: precio, enganche, años
+2. Calcula mensualidad con fórmula de amortización
+3. Formatea plan completo
+
+**Fórmula**:
+```
+M = P * [r(1+r)^n] / [(1+r)^n - 1]
+Donde: M=mensualidad, P=monto financiado, r=tasa mensual, n=meses
+```
+
+**Configuración**: GPT-4o-mini, temperature=0, tasa fija 10% anual
+
+**Ejemplo**:
+```
+Input: "Auto de $300,000 con $60,000 de enganche a 5 años"
+
+Extracción: {"precio": 300000, "enganche": 60000, "years": 5}
+
+Output:
+"Plan de Financiamiento:
+- Precio: $300,000
+- Enganche: $60,000
+- Financiado: $240,000
+- Plazo: 5 años (60 meses)
+- Mensualidad: $5,099.79
+- Total: $305,987.40
+- Intereses: $65,987.40"
+```
+
+
+## Stack Tecnológico
+
+- **Web Framework**: FastAPI
+- **Server**: Uvicorn
+- **Agent Orchestration**: LangGraph
+- **LLM**: OpenAI GPT-4o-mini
+- **Embeddings**: OpenAI text-embedding-3-small
+- **Data**: Pandas, NumPy
+- **Similarity Search**: Scikit-learn
+- **WhatsApp**: Twilio
+- **Container**: Docker
+
+
+## Roadmap de Producción
+
+### 1. Deploy en AWS
+
+**Infraestructura**
+- Contenedores en ECS Fargate con auto-scaling
+- Imágenes en ECR (Elastic Container Registry)
+- Load balancer para distribución de tráfico
+- Deploy automático desde GitHub Actions
+
+**Base de Datos**: PostgreSQL en AWS RDS
+**Cache**: Redis en AWS ElastiCache  
+**Secrets**: AWS Secrets Manager para API keys
+
+**Seguridad**
+- Validación de firma de Twilio webhook
+- Rate limiting (10 requests/minuto)
+- HTTPS obligatorio
+
+**Monitoreo**: AWS CloudWatch para logs, métricas y alertas
+
+
+### 2. Evaluación de Desempeño
+
+**Métricas Técnicas**
+- Latencia por agente
+- Accuracy del clasificador (target > 95%)
+- Costos por mensaje
+
+**Métricas de Negocio**
+- CSAT: Feedback 👍/👎 (target > 4/5)
+- Tasa de resolución (target > 80%)
+- Conversión a test drive/financiamiento (target > 15%)
+
+**Dashboard en CloudWatch**
+- Total mensajes/día
+- Error rate
+- Costo total
+- Latencia promedio
+
+
+### 3. Testing y Regression
+
+**Tests Automáticos**
+- Tests unitarios para cada agente
+- Tests de integración end-to-end
+- Ejecutar en CI/CD antes de cada deploy
+- Cobertura de código > 80%
+
+**Golden Dataset**: 50+ casos de prueba con resultados esperados
+
+**Regression Testing**: Comparar nueva versión con 100 conversaciones históricas
+
+**Deploy Gradual**
+1. 10% tráfico → Monitorear 1 hora
+2. Si OK → 50% → Monitorear 1 hora  
+3. Si OK → 100%
+4. Si falla → Rollback automático
+
+
+### Timeline de Implementación
+
+**Semana 1-2**: PostgreSQL + Redis + CI/CD  
+**Semana 3-4**: Logging + Métricas + Alertas  
+**Semana 5-6**: Tests + Golden dataset  
+**Semana 7-8**: Deploy producción
