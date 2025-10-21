@@ -1,0 +1,12 @@
+services:
+  chatbot:
+    build: .
+    container_name: kavak-chatbot
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+    restart: unless-stopped

@@ -11,7 +11,7 @@ def configure_logging():
 def main():
     configure_logging()
     app = create_app()
-    logging.info("🚗 Iniciando agente comercial de Kavak (LangGraph + FastAPI)...")
+    logging.info("Iniciando agente (LangGraph + FastAPI)...")
 
     uvicorn.run(
         app,

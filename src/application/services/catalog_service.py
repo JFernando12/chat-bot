@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from typing import Optional, Protocol, List
 import pandas as pd
-from sentence_transformers import SentenceTransformer
+from openai import OpenAI
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+from config.settings import env
 
 @dataclass(frozen=True)
 class Car:
@@ -53,15 +54,23 @@ class PandasCatalogRepository:
         return cars
 
 class SemanticCatalogSearchService:
-    """Búsqueda semántica usando embeddings."""
+    """Búsqueda semántica usando embeddings de OpenAI."""
     def __init__(self, repository: CatalogRepository):
         self.repository = repository
-        print("Cargando modelo de embeddings multilingüe...")
-        # Modelo que entiende español e inglés
-        self.model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
+        print("Inicializando cliente de OpenAI para embeddings...")
+        self.client = OpenAI(api_key=env.openai_api_key)
+        self.embedding_model = "text-embedding-3-small"
         print("Preparando embeddings del catálogo...")
         self._prepare_embeddings()
         print("Embeddings listos.")
+
+    def _get_embedding(self, text: str) -> List[float]:
+        """Obtiene el embedding de un texto usando OpenAI."""
+        response = self.client.embeddings.create(
+            input=text,
+            model=self.embedding_model
+        )
+        return response.data[0].embedding
 
     def _prepare_embeddings(self):
         self.cars = self.repository.get_all()
@@ -72,10 +81,12 @@ class SemanticCatalogSearchService:
             f"largo {car.largo or ''} ancho {car.ancho or ''} altura {car.altura or ''}"
             for car in self.cars
         ]
-        self.embeddings = self.model.encode(texts, normalize_embeddings=True)
+        # Obtener embeddings de todos los textos
+        print(f"Generando embeddings para {len(texts)} vehículos...")
+        self.embeddings = np.array([self._get_embedding(text) for text in texts])
 
     def search_by_text(self, query: str, top_k: int = 5) -> List[Car]:
-        query_emb = self.model.encode([query], normalize_embeddings=True)
+        query_emb = np.array([self._get_embedding(query)])
         sims = cosine_similarity(query_emb, self.embeddings)[0]
         ranked_idx = np.argsort(sims)[::-1]
         top_cars = [self.cars[i] for i in ranked_idx[:top_k]]

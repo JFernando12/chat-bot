@@ -12,10 +12,6 @@ def create_app() -> FastAPI:
         version="1.0",
         description="Agente comercial inteligente integrado con WhatsApp y LangGraph"
     )
-
-    # --- Inicialización de dependencias ---
-    catalog_path = 'data/sample_caso_ai_engineer.csv'
-    logger.info(f"Usando catálogo: {catalog_path}")
     
     app.include_router(chat_router, prefix="/api")
     app.include_router(whatsapp_router, prefix="/api")

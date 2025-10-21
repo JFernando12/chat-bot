@@ -17,9 +17,5 @@ class Environment:
         self.langsmith_api_key = os.getenv("LANGSMITH_API_KEY")
         self.langsmith_project_name = os.getenv("LANGSMITH_PROJECT_NAME", "kavak-commercial-agent")
         self.langsmith_tracing_enabled = os.getenv("LANGSMITH_TRACING_ENABLED", "true").lower() == "true"
-        
-        self.database_csv_path = os.getenv("DATABASE_CSV_PATH", "data/car_catalog.csv")
-        
-        self.secret_key = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
-
+                
 env = Environment()
