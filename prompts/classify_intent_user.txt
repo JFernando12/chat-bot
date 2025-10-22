@@ -1,0 +1,15 @@
+Clasifica la siguiente consulta en UNA de estas categorías:
+
+CATEGORÍAS:
+1. GENERAL - Preguntas sobre Kavak, políticas, garantía, devoluciones, proceso de compra, servicios
+2. CATALOG_SEARCH - Búsqueda de autos específicos (marca, modelo, año, precio, características)
+3. FINANCE_CALCULATION - Cálculo de financiamiento, mensualidades, planes de pago
+
+Ejemplos:
+- "¿Qué garantía ofrecen?" → GENERAL
+- "Quiero un Honda Civic" → CATALOG_SEARCH
+- "¿Cuánto pagaría mensualmente por un auto de $250k?" → FINANCE_CALCULATION
+
+Consulta: "{query}"
+
+Responde SOLO con UNA palabra: GENERAL, CATALOG_SEARCH o FINANCE_CALCULATION

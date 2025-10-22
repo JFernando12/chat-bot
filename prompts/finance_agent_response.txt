@@ -1,0 +1,11 @@
+El usuario preguntó: "{query}"
+
+Plan calculado:
+- Precio del auto: ${precio} MXN
+- Enganche: ${enganche} MXN
+- Monto financiado: ${financed_amount} MXN
+- Plazo: {years} años ({months} meses)
+- Mensualidad: ${monthly_payment} MXN
+- Total a pagar: ${total_paid} MXN
+- Intereses totales: ${total_interest} MXN
+- Tasa fija anual: 10%

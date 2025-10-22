@@ -8,7 +8,7 @@
 
 ## Diagrama de Componentes
 
-![Arquitectura del Sistema](docs/architecture.png)
+![Arquitectura del Sistema](architecture.png)
 
 ## Componentes Principales
 
@@ -32,7 +32,6 @@
 - **CSV Catalog**: Base de datos de vehículos disponibles
 - **Agent State**: Memoria de conversación en memoria
 
-
 ## Flujo de un Mensaje
 
 ```
@@ -47,7 +46,6 @@ Usuario → Twilio → WhatsApp Router → Chat Service → Clasificador → Age
 6. Se enruta al agente especializado correspondiente
 7. El agente procesa y genera respuesta usando OpenAI
 8. La respuesta se envía de vuelta por Twilio al usuario
-
 
 ## Arquitectura de Agentes
 
@@ -69,7 +67,6 @@ Ejemplos:
 ```
 
 **Configuración**: GPT-4o-mini, temperature=0
-
 
 ### 2. General Agent
 
@@ -93,7 +90,6 @@ Eres agente de Kavak. Información clave:
 Input: "¿Cuál es el periodo de prueba?"
 Output: "Tienes 7 días para probar el auto. Si no te convence, lo devuelves sin problema."
 ```
-
 
 ### 3. Catalog Agent
 
@@ -122,7 +118,6 @@ Output: "Te recomiendo estas 3 opciones:
 - Mazda CX-5 2020: $420,000, 42,000 km, Bluetooth y CarPlay
 - Toyota RAV4 2019: $410,000, 48,000 km, Bluetooth"
 ```
-
 
 ### 4. Finance Agent
 
@@ -158,7 +153,6 @@ Output:
 - Intereses: $65,987.40"
 ```
 
-
 ## Stack Tecnológico
 
 - **Web Framework**: FastAPI
@@ -170,7 +164,6 @@ Output:
 - **Similarity Search**: Scikit-learn
 - **WhatsApp**: Twilio
 - **Container**: Docker
-
 
 ## Roadmap de Producción
 
@@ -193,7 +186,6 @@ Output:
 
 **Monitoreo**: AWS CloudWatch para logs, métricas y alertas
 
-
 ### 2. Evaluación de Desempeño
 
 **Métricas Técnicas**
@@ -201,17 +193,10 @@ Output:
 - Accuracy del clasificador (target > 95%)
 - Costos por mensaje
 
-**Métricas de Negocio**
-- CSAT: Feedback 👍/👎 (target > 4/5)
-- Tasa de resolución (target > 80%)
-- Conversión a test drive/financiamiento (target > 15%)
-
 **Dashboard en CloudWatch**
 - Total mensajes/día
 - Error rate
 - Costo total
-- Latencia promedio
-
 
 ### 3. Testing y Regression
 
@@ -230,7 +215,6 @@ Output:
 2. Si OK → 50% → Monitorear 1 hora  
 3. Si OK → 100%
 4. Si falla → Rollback automático
-
 
 ### Timeline de Implementación
 

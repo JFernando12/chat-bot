@@ -21,7 +21,6 @@ from ..agents import (
 
 logger = logging.getLogger(__name__)
 
-
 class ChatService:
     """
     Agente comercial de Kavak usando LangGraph con Router + Agentes Especializados.
@@ -35,31 +34,26 @@ class ChatService:
     - finance_agent: Cálculo de financiamiento
     """
 
-    def __init__(self, top_k: int = 3):
-        self.top_k = top_k
-        
-        # Inicializar LLM
+    def __init__(self):        
         api_key = env.openai_api_key
         if not api_key:
             raise ValueError("OPENAI_API_KEY no configurada en el entorno.")
         
-        # LLM principal para respuestas
         self.llm = ChatOpenAI(
             model="gpt-4o-mini",
             temperature=0.2,
             api_key=SecretStr(api_key)
         )
         
-        # LLM para clasificación (más rápido)
         self.classifier_llm = ChatOpenAI(
             model="gpt-4o-mini",
-            temperature=0,  # Sin creatividad, solo clasificación
+            temperature=0,
             api_key=SecretStr(api_key)
         )
         
         self.classify_intent_agent = ClassifyIntentAgent(self.classifier_llm)
         self.general_agent = GeneralAgent(self.llm)
-        self.catalog_agent = CatalogAgent(self.llm, top_k)
+        self.catalog_agent = CatalogAgent(self.llm)
         self.finance_agent = FinanceAgent(self.classifier_llm)
         
         self.graph = self._build_graph()
@@ -204,4 +198,4 @@ class ChatService:
             logger.error(f"Error inesperado calculando financiamiento: {e}")
             raise ValueError("No se pudo calcular el plan de financiamiento.")
 
-chat_service = ChatService(top_k=3)
+chat_service = ChatService()

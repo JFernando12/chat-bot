@@ -1,0 +1,17 @@
+Extrae los valores para calcular financiamiento automotriz:
+
+Consulta: "{query}"
+
+Extrae:
+- precio: precio del auto en pesos (ej: 250000) O coloca "MISSING" si no se menciona
+- nombre_auto: marca, modelo y año del auto (ej: "Mazda 3 2018") si se menciona pero no el precio, sino coloca "MISSING"
+- enganche: monto del enganche en pesos (ej: 50000) - REQUERIDO
+- years: años del financiamiento (debe ser entre 3 y 6). Si no se menciona, usa 5 como valor por defecto
+
+IMPORTANTE: Si el usuario menciona un auto pero no da el precio exacto, extrae el nombre_auto.
+
+Formato de respuesta (JSON):
+{{"precio": 250000, "nombre_auto": "MISSING", "enganche": 50000, "years": 5}}
+
+O si menciona el auto sin precio:
+{{"precio": "MISSING", "nombre_auto": "Mazda 3 2018", "enganche": 50000, "years": 5}}

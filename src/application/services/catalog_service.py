@@ -57,12 +57,9 @@ class SemanticCatalogSearchService:
     """Búsqueda semántica usando embeddings de OpenAI."""
     def __init__(self, repository: CatalogRepository):
         self.repository = repository
-        print("Inicializando cliente de OpenAI para embeddings...")
         self.client = OpenAI(api_key=env.openai_api_key)
         self.embedding_model = "text-embedding-3-small"
-        print("Preparando embeddings del catálogo...")
         self._prepare_embeddings()
-        print("Embeddings listos.")
 
     def _get_embedding(self, text: str) -> List[float]:
         """Obtiene el embedding de un texto usando OpenAI."""
@@ -81,8 +78,6 @@ class SemanticCatalogSearchService:
             f"largo {car.largo or ''} ancho {car.ancho or ''} altura {car.altura or ''}"
             for car in self.cars
         ]
-        # Obtener embeddings de todos los textos
-        print(f"Generando embeddings para {len(texts)} vehículos...")
         self.embeddings = np.array([self._get_embedding(text) for text in texts])
 
     def search_by_text(self, query: str, top_k: int = 5) -> List[Car]:
@@ -90,11 +85,6 @@ class SemanticCatalogSearchService:
         sims = cosine_similarity(query_emb, self.embeddings)[0]
         ranked_idx = np.argsort(sims)[::-1]
         top_cars = [self.cars[i] for i in ranked_idx[:top_k]]
-
-        print(f"\nConsulta: {query}")
-        print("Resultados:")
-        for car, sim in zip(top_cars, sims[ranked_idx[:top_k]]):
-            print(f"- {car.marca} {car.modelo} {car.year} - {car.price} - ({car.version}) -> similitud: {sim:.2f}")
         return top_cars
     
 pandasCatalogRepository = PandasCatalogRepository("data/sample_caso_ai_engineer.csv")

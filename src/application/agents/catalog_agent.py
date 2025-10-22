@@ -1,4 +1,3 @@
-"""Agente para búsqueda y recomendación de autos del catálogo."""
 from typing import Any
 import logging
 from dataclasses import asdict
@@ -6,16 +5,16 @@ from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 from domain.agent_state import AgentState
 from application.services.catalog_service import semanticCatalogSearchService
+from config.prompt_loader import prompt_loader
 
 logger = logging.getLogger(__name__)
-
 
 class CatalogAgent:
     """Busca autos en el catálogo y genera recomendaciones personalizadas."""
     
-    def __init__(self, llm: ChatOpenAI, top_k: int = 3):
+    def __init__(self, llm: ChatOpenAI):
         self.llm = llm
-        self.top_k = top_k
+        self.system_prompt_template = prompt_loader.load("catalog_agent_system")
     
     def execute(self, state: AgentState) -> dict[str, Any]:
         """
@@ -31,7 +30,7 @@ class CatalogAgent:
         conversation_history = state.get("conversation_history", "")
         
         try:
-            cars = semanticCatalogSearchService.search_by_text(query, self.top_k)
+            cars = semanticCatalogSearchService.search_by_text(query, top_k=3)
             cars_dict = [asdict(c) for c in cars]
             
             if cars_dict:
@@ -43,24 +42,12 @@ class CatalogAgent:
             else:
                 catalog_context = "No se encontraron autos que coincidan. Sugiere alternativas similares."
             
-            system_prompt = """Eres un vendedor experto de Kavak. Tu misión es recomendar autos del catálogo.
-
-CATÁLOGO:
-{catalog_context}
-
-REGLAS:
-- Recomienda SOLO autos del catálogo mostrado
-- Destaca precio, kilometraje, año y ventajas
-- Si no hay coincidencias exactas, ofrece alternativas
-- Sé persuasivo pero honesto
-- Menciona que todos incluyen garantía y 7 días de prueba"""
-            
             human_content = query
             if conversation_history:
                 human_content = f"Historial:\n{conversation_history}\n\nConsulta: {query}"
             
             result = self.llm.invoke([
-                SystemMessage(content=system_prompt.format(catalog_context=catalog_context)),
+                SystemMessage(content=self.system_prompt_template.format(catalog_context=catalog_context)),
                 HumanMessage(content=human_content)
             ])
             

@@ -1,0 +1,54 @@
+# Respuestas del Agente de Financiamiento
+
+## MISSING_ENGANCHE
+Para calcular tu plan de financiamiento necesito al menos el **monto del enganche**.
+
+📋 **Ejemplo:**
+- "Si doy un enganche de 50 mil en un coche de 300 mil, ¿cómo queda el financiamiento?"
+- "Enganche de 60 mil en un Mazda 3 2018"
+
+¿Cuánto piensas dar de enganche?
+
+## CAR_NOT_FOUND
+No encontré el auto "{car_name}" en nuestro catálogo disponible.
+
+Por favor, especifica el **precio del auto** para poder calcular el financiamiento.
+
+📋 **Ejemplo:**
+- "Enganche de {enganche} en un auto de 300 mil"
+
+¿Cuál es el precio del auto?
+
+## MISSING_PRICE
+Para calcular el financiamiento necesito saber el **precio del auto**.
+
+Puedes darme:
+- El precio exacto (ej: $300,000)
+- El modelo del auto (ej: Mazda 3 2018) y lo busco en nuestro catálogo
+
+📋 **Ejemplo:**
+- "Enganche de 50 mil en un auto de 300 mil"
+
+¿Cuál es el precio del auto?
+
+## FINANCE_PLAN
+💰 **Plan de Financiamiento Kavak**{car_info}
+
+🚗 Precio del auto: ${precio:,.0f} MXN
+💵 Enganche: ${enganche:,.0f} MXN
+📊 Monto financiado: ${financed_amount:,.2f} MXN
+📅 Plazo: {years} años ({months} meses)
+💳 Mensualidad: ${monthly_payment:,.2f} MXN
+💸 Total a pagar: ${total_paid:,.2f} MXN
+📈 Intereses totales: ${total_interest:,.2f} MXN
+
+✅ Tasa fija anual: 10%
+✅ Sin comisión por apertura
+✅ Aprobación en 24 horas
+
+## ERROR_GENERIC
+Hubo un error al calcular el financiamiento. Por favor, proporciona:
+- Monto del enganche
+- Precio del auto o nombre/modelo del vehículo
+
+Ejemplo: "Enganche de 50 mil en un auto de 300 mil"
