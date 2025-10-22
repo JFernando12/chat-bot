@@ -175,8 +175,8 @@ Output:
 - Load balancer para distribución de tráfico
 - Deploy automático desde GitHub Actions
 
-**Base de Datos**: PostgreSQL en AWS RDS
-**Cache**: Redis en AWS ElastiCache  
+**Base de Datos**: PostgreSQL en AWS RDS   
+**Cache** : Redis en AWS ElastiCache   
 **Secrets**: AWS Secrets Manager para API keys
 
 **Seguridad**
