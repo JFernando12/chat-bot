@@ -70,17 +70,17 @@ Ejemplos:
 
 ### 2. General Agent
 
-Responde preguntas sobre Kavak: garantía, proceso de compra, servicios.
+Responde preguntas sobre Kavak usando embeddings de propuesta de valor.
 
-**Prompt**:
+**Proceso**:
+1. Búsqueda semántica en base de conocimientos (embeddings)
+2. Recupera las 3 secciones más relevantes
+3. Genera respuesta usando contexto recuperado
+
+**System Prompt**:
 ```
-Eres agente de Kavak. Información clave:
-- Garantía: 3 meses o 3,000 km
-- Periodo de prueba: 7 días
-- Certificación: +200 puntos de inspección
-- Proceso 100% digital
-- Entrega a domicilio gratis
-- Financiamiento: 10% anual, 3-6 años
+Eres agente de Kavak. Usa el contexto proporcionado para responder.
+Sé amable, conciso y profesional.
 ```
 
 **Configuración**: GPT-4o-mini, temperature=0.2
